@@ -14,7 +14,6 @@ enum DateTimePickerMode {
   datetime,
 }
 
-
 class DatePicker {
   /// Gets the right [DateTimePickerLocale] by a language string
   ///
@@ -102,9 +101,15 @@ class DatePicker {
     Color textColor,
     //TextStyle itemTextStyle,
     String titleText,
+    TextStyle titleStyle,
     String confirmText,
+    Widget confirmButton,
     String cancelText,
+    Widget cancelButton,
+    TextStyle buttonStyle,
     bool looping: false,
+    double width = 300,
+    double spacing = 15,
   }) {
     DateTime _selectedDate = initialDate;
 
@@ -132,44 +137,96 @@ class DatePicker {
     var datePickerDialog = AlertDialog(
       title: Text(
         titleText ?? "Select Date",
-        style: TextStyle(color: textColor),
+        style: titleStyle ?? TextStyle(color: textColor),
       ),
-      contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 14),
+      // contentPadding:
+      //     EdgeInsets.symmetric(vertical: 0, horizontal: verticalPadding),
       backgroundColor: backgroundColor,
       content: Container(
-        width: 300,
-        child: DatePickerWidget(
-          firstDate: firstDate,
-          lastDate: lastDate,
-          initialDate: initialDate,
-          dateFormat: dateFormat,
-          locale: locale,
-          pickerTheme: DateTimePickerTheme(
-            backgroundColor: backgroundColor,
-            itemTextStyle: TextStyle(color: textColor),
-          ),
-          onChange: ((DateTime date, list) {
-            _selectedDate = date;
-          }),
-          looping: looping,
+        width: width,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            DatePickerWidget(
+              firstDate: firstDate,
+              lastDate: lastDate,
+              initialDate: initialDate,
+              dateFormat: dateFormat,
+              locale: locale,
+              pickerTheme: DateTimePickerTheme(
+                backgroundColor: backgroundColor,
+                itemTextStyle: TextStyle(color: textColor),
+              ),
+              onChange: ((DateTime date, list) {
+                _selectedDate = date;
+              }),
+              looping: looping,
+            ),
+            Container(height: spacing),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Flexible(
+                  child: cancelButton ??
+                      FlatButton(
+                        textColor: textColor,
+                        child: Text(cancelText ?? "Cancel"),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                ),
+                Container(width: spacing),
+                Flexible(
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context, _selectedDate);
+                    },
+                    child: confirmButton ??
+                        FlatButton(
+                          textColor: textColor,
+                          child: Text(
+                            confirmText ?? "OK",
+                            style: buttonStyle ?? TextStyle(color: textColor),
+                          ),
+                          onPressed: () {
+                            Navigator.pop(context, _selectedDate);
+                          },
+                        ),
+                  ),
+                ),
+              ],
+            ),
+            Container(width: spacing),
+          ],
         ),
       ),
-      actions: <Widget>[
-        FlatButton(
-          textColor: textColor,
-          child: Text(confirmText ?? "OK"),
-          onPressed: () {
-            Navigator.pop(context, _selectedDate);
-          },
-        ),
-        FlatButton(
-          textColor: textColor,
-          child: Text(cancelText ?? "Cancel"),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        )
-      ],
+      // actions: <Widget>[
+      //   cancelButton ??
+      //       FlatButton(
+      //         textColor: textColor,
+      //         child: Text(cancelText ?? "Cancel"),
+      //         onPressed: () {
+      //           Navigator.pop(context);
+      //         },
+      //       ),
+      //   GestureDetector(
+      //     onTap: () {
+      //       Navigator.pop(context, _selectedDate);
+      //     },
+      //     child: confirmButton ??
+      //         FlatButton(
+      //           textColor: textColor,
+      //           child: Text(
+      //             confirmText ?? "OK",
+      //             style: buttonStyle ?? TextStyle(color: textColor),
+      //           ),
+      //           onPressed: () {
+      //             Navigator.pop(context, _selectedDate);
+      //           },
+      //         ),
+      //   ),
+      // ],
     );
     return showDialog(
         useRootNavigator: false,
