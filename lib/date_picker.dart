@@ -97,6 +97,7 @@ class DatePicker {
     String dateFormat,
     DateTimePickerLocale locale: DATETIME_PICKER_LOCALE_DEFAULT,
     DateTimePickerMode pickerMode: DateTimePickerMode.date,
+    Color barrierColor,
     Color backgroundColor,
     Color textColor,
     //TextStyle itemTextStyle,
@@ -229,9 +230,11 @@ class DatePicker {
       // ],
     );
     return showDialog(
-        useRootNavigator: false,
-        context: context,
-        builder: (context) => datePickerDialog);
+      barrierColor: barrierColor,
+      useRootNavigator: false,
+      context: context,
+      builder: (context) => datePickerDialog,
+    );
   }
 }
 
